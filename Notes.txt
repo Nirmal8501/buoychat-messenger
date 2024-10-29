@@ -1,0 +1,34 @@
+create project with vite
+
+shadcn for component library --> install it  
+                    npm install -D tailwindcss postcss autoprefixer
+                    >>
+                    >> npx tailwindcss init -p
+
+
+for server, we created a folder server then ran npm init --yes, this creates a basic package.json
+
+npm i express dotenv bcrypt jsonwebtoken cookie-parser cors mongoose
+
+add a type:"module" to server's ppackage.json and install nodemon as a dev dependency
+
+now made a .env file
+
+
+//////////////////// SERVER //////////////////////
+
+Explanation of const app = express();
+Creates an Express Application:
+
+express() is a function provided by the Express.js framework. When you call it, it creates an instance of an Express application, which is essentially an object that represents your web server.
+Encapsulates Application Configuration:
+
+The app instance serves as the main entry point for configuring and setting up routes, middleware, and other application-wide settings in your server.
+This app object allows you to define routes (URLs) and responses, set up middleware, listen for incoming HTTP requests, handle errors, and more.
+Makes the Server Ready to Handle Requests:
+
+The app instance has methods (like .get(), .post(), .use(), and .listen()) that you use to define how your server responds to different HTTP requests (e.g., GET, POST) and how it processes requests through middleware.
+Once you set up all the routes and middleware, you can call app.listen(port, callback) to start the server and listen on a specified port.
+
+
+
