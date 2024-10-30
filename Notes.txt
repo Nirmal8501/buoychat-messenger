@@ -32,3 +32,27 @@ Once you set up all the routes and middleware, you can call app.listen(port, cal
 
 
 
+///////////////// DB //////////////////////////
+
+2. Hashing the Password
+const salt = await genSalt();:
+
+genSalt() is a function (usually from the bcrypt library) that generates a salt. A salt is a random value added to the password before hashing to ensure that even if two users have the same password, their hashed passwords will be different.
+The await keyword indicates that this function returns a promise, and the code will wait for the salt to be generated before moving on to the next line.
+
+
+middlewares should always call next() after their operation is performed
+
+
+1) mongoose.Schema
+Definition: The mongoose.Schema constructor is used to create a schema for a MongoDB collection. A schema defines the structure of the documents within that collection, including field names, data types, and validation requirements.
+
+Usage: You define a schema by creating an instance of mongoose.Schema, passing an object that describes the fields and their types.
+
+
+2)userSchema.pre
+Definition: The pre method is used to define middleware that runs before a certain action is taken on the schema, such as saving a document or validating. The middleware can perform actions like data transformation, validation, or even logging.
+
+Usage: You call userSchema.pre with the name of the operation (e.g., "save", "validate") and a function that describes what should happen before that operation.
+
+
