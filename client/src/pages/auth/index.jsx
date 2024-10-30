@@ -8,9 +8,11 @@ import BackgroundImg from "../../assets/backk.png";
 import Background2 from "../../assets/back.png";
 import { toast } from "sonner";
 import { apiClient } from "../../lib/api-client";
-import { SIGNUP_ROUTE } from "@/utils/constants";
+import { SIGNUP_ROUTE, LOGIN_ROUTE } from "@/utils/constants";
+import { useNavigate } from "react-router-dom";
 
 const Auth = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -25,18 +27,64 @@ const Auth = () => {
       return false;
     }
     if (password !== confirmPassword) {
-      toast.message("Passwords do not match..");
+      toast.error("Passwords do not match..");
       return false;
     }
     return true;
   };
 
-  const handleLogin = async () => {};
+  const validateLogin = () => {
+    if (!email.length) {
+      toast.error("Email is required..");
+      return false;
+    }
+    if (!password.length) {
+      toast.error("Password is required..");
+      return false;
+    }
+    return true;
+  };
+
+  const handleLogin = async () => {
+    if (validateLogin()) {
+      apiClient
+        .post(LOGIN_ROUTE, { email, password }, { withCredentials: true })
+        .then((res) => {
+          console.log(res);
+          toast.message("Login successful", {
+            duration: 2500,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.message(err.response.data, {
+            duration: 2500,
+          });
+        });
+    }
+  };
+
+  // this is an Alternative Code, but we might have to put it in try catch
+
+  // const response = await apiClient.post(LOGIN_ROUTE, { email, password }, { withCredentials: true });
+  // console.log(response); // This response is the same as 'res' in the .then() block
 
   const handleSignup = async () => {
     if (validateSignup()) {
-      const response = await apiClient.post(SIGNUP_ROUTE, { email, password });
-      console.log(response);
+      apiClient
+        .post(SIGNUP_ROUTE, { email, password }, { withCredentials: true }) // withCred is used to recieve a cookie which is sent by server
+        .then((res) => {
+          console.log(res);
+          toast.message("Signup successful", {
+            duration: 2500,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.message(err.response.data, {
+            duration: 2500,
+          });
+        });
     }
   };
 
