@@ -56,3 +56,8 @@ Definition: The pre method is used to define middleware that runs before a certa
 Usage: You call userSchema.pre with the name of the operation (e.g., "save", "validate") and a function that describes what should happen before that operation.
 
 
+
+
+axios.create() is a method provided by the Axios library in JavaScript. It allows you to create an instance of Axios with custom configuration, such as base URLs, headers, and timeouts. This is useful when you want to set up an Axios instance with specific defaults, which can then be used throughout your app without reconfiguring each request.
+
+
