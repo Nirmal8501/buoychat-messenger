@@ -10,13 +10,16 @@ import { toast } from "sonner";
 import { apiClient } from "../../lib/api-client";
 import { SIGNUP_ROUTE, LOGIN_ROUTE } from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
+import { useAppStore } from "@/store/store";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { setUserInfo } = useAppStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // adding client side validation
   const validateSignup = () => {
     if (!email.length) {
       toast.error("Email is required..");
@@ -52,13 +55,22 @@ const Auth = () => {
         .then((res) => {
           console.log(res);
           toast.message("Login successful", {
-            duration: 2500,
+            duration: 4500,
           });
+
+          if (res?.data?.user?.id) {
+            setUserInfo(res.data.user);
+            if (res.data.user.isProfileSetup) {
+              navigate("/chat");
+            } else {
+              navigate("/profile");
+            }
+          }
         })
         .catch((err) => {
           console.log(err);
           toast.message(err.response.data, {
-            duration: 2500,
+            duration: 4500,
           });
         });
     }
@@ -76,13 +88,15 @@ const Auth = () => {
         .then((res) => {
           console.log(res);
           toast.message("Signup successful", {
-            duration: 2500,
+            duration: 4500,
           });
+          setUserInfo(res.data.user);
+          navigate("/profile");
         })
         .catch((err) => {
           console.log(err);
           toast.message(err.response.data, {
-            duration: 2500,
+            duration: 4500,
           });
         });
     }
@@ -104,7 +118,7 @@ const Auth = () => {
         <div className="flex flex-col gap-10 items-center justify-center ">
           <div className="flex flex-col items-center justify-center ">
             <div className="flex items-center justify-center">
-              <h1 className="text-5xl font-bold ">Welcome</h1>
+              <h1 className="text-4xl font-bold ">Welcome</h1>
               <img src={Victory} alt="Peace Emoji" className="h-[100px]" />
             </div>
             <p className="font-medium text-center">
