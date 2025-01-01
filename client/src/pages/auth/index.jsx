@@ -1,11 +1,9 @@
-import Background from "@/assets/login2.png";
 import Victory from "@/assets/victory.svg";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import BackgroundImg from "../../assets/backk.png";
-import Background2 from "../../assets/back.png";
 import { toast } from "sonner";
 import { apiClient } from "../../lib/api-client";
 import { SIGNUP_ROUTE, LOGIN_ROUTE } from "@/utils/constants";
@@ -50,30 +48,52 @@ const Auth = () => {
 
   const handleLogin = async () => {
     if (validateLogin()) {
-      apiClient
-        .post(LOGIN_ROUTE, { email, password }, { withCredentials: true })
-        .then((res) => {
-          console.log(res);
-          toast.message("Login successful", {
-            duration: 4500,
-          });
+      const res = await apiClient.post(
+        LOGIN_ROUTE,
+        { email, password },
+        { withCredentials: true }
+      );
 
-          if (res?.data?.user?.id) {
-            setUserInfo(res.data.user);
-            if (res.data.user.isProfileSetup) {
-              navigate("/chat");
-            } else {
-              navigate("/profile");
-            }
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.message(err.response.data, {
-            duration: 4500,
-          });
+      console.log(res);
+
+      if (res.data.user.id) {
+        toast.message("Login successful", {
+          duration: 4500,
         });
+        setUserInfo(res.data.user);
+        if (res.data.user.isProfileSetup) {
+          navigate("/chat");
+        } else {
+          navigate("/profile");
+        }
+      }
     }
+
+    // if (validateLogin()) {
+    //   apiClient
+    //     .post(LOGIN_ROUTE, { email, password }, { withCredentials: true })
+    //     .then((res) => {
+    //       console.log(res);
+    //       toast.message("Login successful", {
+    //         duration: 4500,
+    //       });
+
+    //       if (res?.data?.user?.id) {
+    //         setUserInfo(res.data.user);
+    //         if (res.data.user.isProfileSetup) {
+    //           navigate("/chat");
+    //         } else {
+    //           navigate("/profile");
+    //         }
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //       toast.message(err.response.data, {
+    //         duration: 4500,
+    //       });
+    //     });
+    // }
   };
 
   // this is an Alternative Code, but we might have to put it in try catch
@@ -83,23 +103,42 @@ const Auth = () => {
 
   const handleSignup = async () => {
     if (validateSignup()) {
-      apiClient
-        .post(SIGNUP_ROUTE, { email, password }, { withCredentials: true }) // withCred is used to recieve a cookie which is sent by server
-        .then((res) => {
-          console.log(res);
-          toast.message("Signup successful", {
-            duration: 4500,
-          });
-          setUserInfo(res.data.user);
-          navigate("/profile");
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.message(err.response.data, {
-            duration: 4500,
-          });
+      const response = await apiClient.post(
+        SIGNUP_ROUTE,
+        { email, password },
+        { withCredentials: true }
+      );
+
+      console.log(response);
+
+      if (response.status === 201) {
+        toast.message("Signup successful", {
+          duration: 4500,
         });
+
+        setUserInfo(response.data.user);
+        navigate("/profile");
+      }
     }
+
+    // if (validateSignup()) {
+    //   apiClient
+    //     .post(SIGNUP_ROUTE, { email, password }, { withCredentials: true }) // withCred is used to recieve a cookie which is sent by server
+    //     .then((res) => {
+    //       console.log(res);
+    //       toast.message("Signup successful", {
+    //         duration: 4500,
+    //       });
+    //       setUserInfo(res.data.user);
+    //       navigate("/profile");
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //       toast.message(err.response.data, {
+    //         duration: 4500,
+    //       });
+    //     });
+    // }
   };
 
   return (

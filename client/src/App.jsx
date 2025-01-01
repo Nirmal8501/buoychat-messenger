@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Auth from "./pages/auth";
 import Chat from "./pages/chat";
 import Profile from "./pages/profile";
 import { useAppStore } from "./store/store";
+import { GET_USER_INFO } from "./utils/constants";
+import { apiClient } from "./lib/api-client";
 
 // if user isnt authenticated, we redirect them to auth page
 const PrivateRoute = ({ children }) => {
@@ -20,10 +22,43 @@ const AuthRoute = ({ children }) => {
 };
 
 const App = () => {
+  const { userInfo, setUserInfo } = useAppStore();
+  const [loading, setloading] = useState(true);
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const response = await apiClient.get(GET_USER_INFO, {
+          withCredentials: true,
+        });
+        console.log("fetching user data (Client call)");
+        console.log({ response });
+        // if API call was successful then no need to login
+        if (response.status === 200 && response.data.id) {
+          setUserInfo(response.data);
+        } else {
+          setUserInfo(undefined);
+        }
+      } catch (error) {
+        console.log({ error });
+        setUserInfo(undefined);
+      } finally {
+        setloading(false);
+      }
+    };
+    if (!userInfo) {
+      getUserData();
+    } else {
+      setloading(false);
+    }
+  }, [userInfo, setUserInfo]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route path="/auth" element={<Auth />} /> */}
         <Route
           path="/auth"
           element={
