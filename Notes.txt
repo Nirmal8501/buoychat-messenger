@@ -61,3 +61,5 @@ Usage: You call userSchema.pre with the name of the operation (e.g., "save", "va
 axios.create() is a method provided by the Axios library in JavaScript. It allows you to create an instance of Axios with custom configuration, such as base URLs, headers, and timeouts. This is useful when you want to set up an Axios instance with specific defaults, which can then be used throughout your app without reconfiguring each request.
 
 
+FormData is a built-in browser API used to construct a set of key/value pairs representing form fields and their values. It is often used to send form data, especially when dealing with files (binary data) in POST requests.
+formData.append("profile-image", file): The append method adds a new field to the FormData object. The first argument is the name of the field (profile-image), and the second is the file itself.

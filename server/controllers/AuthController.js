@@ -2,6 +2,7 @@ import { compare } from "bcrypt";
 import Users from "../models/UserModel.js";
 import jwt from "jsonwebtoken";
 import { response } from "express";
+import { renameSync, unlinkSync } from "fs";
 
 const maxAge = 1000 * 60 * 60 * 24 * 3;
 
@@ -89,9 +90,9 @@ export const login = async (request, response, next) => {
 
 export const getUserInfo = async (request, response, next) => {
   // user is already authenticated in the client side but still we can put an extra check here, but instead we ll make use of cookie which we had set
-  console.log("inside get user info");
+  // console.log("inside get user info");
   // console.log({ request });
-  console.log(request.userId);
+  // console.log(request.userId);
   try {
     const userData = await Users.findById(request.userId); // this is the decrypted UserId which we are setting in middleware after successful auth. as request has only email n pass but we gotta search from ID (as it is indexed) so we push ID in request with the help of payload
 
@@ -112,3 +113,63 @@ export const getUserInfo = async (request, response, next) => {
     return res.status(500).send("Internal Server Error");
   }
 };
+
+export const updateProfile = async (req, res, next) => {
+  try {
+    const { userId } = req;
+    const { firstName, lastName, color } = req.body;
+
+    if (!firstName || !lastName || color == undefined) {
+      return res.status(400).send("FirstName, LastName and Color are required");
+    }
+
+    const userData = await Users.findByIdAndUpdate(
+      userId,
+      { firstName, lastName, color, isProfileSetup: true },
+      { new: true, runValidators: true }
+    );
+    // if(!user){
+    //   return res.status(404).send("");
+    // } no need to check this, as user will be authenticated at the profile page and hence exists
+
+    return res.status(200).json({
+      id: userData.id,
+      email: userData.email,
+      isProfileSetup: userData.isProfileSetup,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      image: userData.image,
+      color: userData.color,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Internal Servr Error.");
+  }
+};
+
+export const addProfileImage = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).send("File is required");
+    }
+
+    const date = Date.now();
+    const fileName = "uploads/profiles/" + date + req.file.originalname;
+    renameSync(req.file.path, fileName);
+
+    const updatedUser = await Users.findByIdAndUpdate(
+      req.userId,
+      { profilePicture: fileName },
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json({
+      image: updatedUser.profilePicture,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Internal Servr Error.");
+  }
+};
+
+export const removeProfileImage = async (req, res, next) => {};
