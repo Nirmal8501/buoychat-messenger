@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
 import { UPDATE_USER_PROFILE } from "@/utils/constants";
 import { ADD_PROFILE_IMAGE_ROUTE, HOST } from "@/utils/constants";
+import { REMOVE_PROFILE_IMAGE_ROUTE } from "@/utils/constants";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -102,7 +103,20 @@ const Profile = () => {
     }
   };
 
-  const handleImageDelete = async () => {};
+  const handleImageDelete = async () => {
+    try {
+      const response = await apiClient.delete(REMOVE_PROFILE_IMAGE_ROUTE, {
+        withCredentials: true,
+      });
+      if (response.status === 200) {
+        setUserInfo({ ...userInfo, image: null });
+        toast.success("Image deleted successfully.");
+        setImage(null);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="bg-[#1b1c24] h-[100vh] flex items-center justify-center flex-col gap-10">

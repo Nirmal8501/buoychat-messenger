@@ -78,7 +78,7 @@ export const login = async (request, response, next) => {
         isProfileSetup: user.isProfileSetup,
         firstName: user.firstName,
         lastName: user.lastName,
-        image: user.image,
+        image: user.profilePicture,
         color: user.color,
       },
     });
@@ -105,7 +105,7 @@ export const getUserInfo = async (request, response, next) => {
       isProfileSetup: userData.isProfileSetup,
       firstName: userData.firstName,
       lastName: userData.lastName,
-      image: userData.image,
+      image: userData.profilePicture,
       color: userData.color,
     });
   } catch (error) {
@@ -172,4 +172,24 @@ export const addProfileImage = async (req, res, next) => {
   }
 };
 
-export const removeProfileImage = async (req, res, next) => {};
+export const removeProfileImage = async (req, res, next) => {
+  try {
+    const user = await Users.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    if (user.profilePicture) {
+      unlinkSync(user.profilePicture); // deleted the image from server at the path given in profilePicture, we know it stores the path of image on server
+    }
+
+    user.profilePicture = null; // change image path to null in db so it doesnt store any image.
+    await user.save();
+
+    return res.status(200).send("Profile pic removed successfully.");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Internal Servr Error.");
+  }
+};
