@@ -1,10 +1,34 @@
-import { useState } from "react";
+import EmojiPicker from "emoji-picker-react";
+import { useEffect, useRef, useState } from "react";
 import { GrAttachment } from "react-icons/gr";
 import { IoSend } from "react-icons/io5";
 import { RiEmojiStickerLine } from "react-icons/ri";
 
 const MessageBar = () => {
+  const emojiRef = useRef();
+  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const [message, setMessage] = useState("");
+
+  // we are adding a global event listener in the doc which will track the mouseClick and on the click it will have the element who triggered it, and onCLick we will run the handleClickOutside function. So emojiRef.current will store the div where emojiPicker is there as we have attached the ref at that place. and if the current ref doesnt contain the one which triggered it then close it.
+  useEffect(() => {
+    // to close emoji picker whenever clicked outside of it
+    function handleClickOutside(event) {
+      // console.log("Clicked element (event.target):", event.target);
+      // console.log("Emoji Picker element (emojiRef.current):", emojiRef.current);
+
+      if (emojiRef.current && !emojiRef.current.contains(event.target)) {
+        setEmojiPickerOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [emojiRef]); // will work even if emojiRef is not added in dependency as it is not changing, but a good practice to future proof it in case it changes.
+
+  const handleAddEmoji = (emoji) => {
+    setMessage((msg) => msg + emoji.emoji);
+  };
 
   const handleSendMessage = async () => {};
 
@@ -18,14 +42,27 @@ const MessageBar = () => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-        <button className="text-neutral-500 focus:border-none focus:outline:none focus:text-white duration-300 transition-all">
+        <button
+          className="text-neutral-500 focus:border-none focus:outline:none focus:text-white duration-300 transition-all"
+          // onClick={}
+        >
           <GrAttachment className="text-2xl" />
         </button>
         <div className="relative ">
-          <button className="text-neutral-500 focus:border-none focus:outline:none focus:text-white duration-300 transition-all">
+          <button
+            className="text-neutral-500 focus:border-none focus:outline:none focus:text-white duration-300 transition-all"
+            onClick={() => setEmojiPickerOpen(true)}
+          >
             <RiEmojiStickerLine className="text-2xl" />
           </button>
-          <div className="absolute bottom-16 right-0 "></div>
+          <div className="absolute bottom-16 right-0 " ref={emojiRef}>
+            <EmojiPicker
+              theme="dark"
+              open={emojiPickerOpen}
+              onEmojiClick={handleAddEmoji}
+              autoFocusSearch={false}
+            />
+          </div>
         </div>
       </div>
       <button
