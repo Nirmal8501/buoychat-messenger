@@ -7,7 +7,7 @@ import EmptyChatContainer from "./empty-chat-container/EmptyChatContainer";
 import ChatContainer from "./chat-container/ChatContainer";
 
 const Chat = () => {
-  const { userInfo } = useAppStore();
+  const { userInfo, selectedChatType } = useAppStore();
   const navigate = useNavigate();
 
   //whenever this user's info changes (anywhere in the app as we are using store) this will trigger.
@@ -22,8 +22,11 @@ const Chat = () => {
   return (
     <div className="flex h-[100vh] text-white overflow-hidden">
       <ContactsContainer />
-      {/* <EmptyChatContainer /> */}
-      {/* <ChatContainer /> */}
+      {selectedChatType === undefined ? (
+        <EmptyChatContainer />
+      ) : (
+        <ChatContainer />
+      )}
     </div>
   );
 };

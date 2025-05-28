@@ -43,14 +43,14 @@ const MessageBar = () => {
           onChange={(e) => setMessage(e.target.value)}
         />
         <button
-          className="text-neutral-500 focus:border-none focus:outline:none focus:text-white duration-300 transition-all"
+          className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all hover:text-white"
           // onClick={}
         >
           <GrAttachment className="text-2xl" />
         </button>
         <div className="relative ">
           <button
-            className="text-neutral-500 focus:border-none focus:outline:none focus:text-white duration-300 transition-all"
+            className="text-neutral-500 focus:border-none focus:outline-none focus:text-white duration-300 transition-all hover:text-white"
             onClick={() => setEmojiPickerOpen(true)}
           >
             <RiEmojiStickerLine className="text-2xl" />
@@ -66,7 +66,7 @@ const MessageBar = () => {
         </div>
       </div>
       <button
-        className=" bg-[#8417ff] rounded-full flex items-center justify-center p-5  focus:border-none focus:outline:none focus:text-white focus:bg-[#941bda] hover:bg-[#941bda] duration-300 transition-all"
+        className=" bg-[#8417ff] rounded-full flex items-center justify-center p-5  focus:border-none focus:outline-none focus:text-white focus:bg-[#941bda] hover:bg-[#941bda] duration-300 transition-all"
         onClick={handleSendMessage}
       >
         <IoSend className="text-2xl" />

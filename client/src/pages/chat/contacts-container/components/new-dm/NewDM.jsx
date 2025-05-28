@@ -24,8 +24,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { HOST } from "@/utils/constants";
 import { getColor } from "@/lib/utils";
+import { useAppStore } from "@/store/store";
 
 const NewDM = () => {
+  const { setSelectedChatType, setSelectedChatData } = useAppStore();
   const [openNewContactModel, setOpenNewContactModel] = useState(false);
   const [searchedContacts, setSearchedContacts] = useState([]);
 
@@ -51,6 +53,14 @@ const NewDM = () => {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const selectNewContact = (contact) => {
+    // we will close the search contact dialogue and then store this contact in zustand store
+    setOpenNewContactModel(false);
+    setSelectedChatType("contact");
+    setSelectedChatData(contact);
+    setSearchedContacts([]);
   };
 
   return (
@@ -89,6 +99,7 @@ const NewDM = () => {
                   <div
                     key={contact._id}
                     className="flex gap-3 items-center cursor-pointer "
+                    onClick={() => selectNewContact(contact)}
                   >
                     <div className="w-12 h-12 relative ">
                       <Avatar className="h-12 w-12  rounded-full overflow-hidden">
